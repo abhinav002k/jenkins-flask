@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    environment {
+        FRONTEND_DIR = "frontend"
+        BACKEND_DIR = "backend"
+        BACKEND_URL=""
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                dir('.') {
+                     git branch: 'master-frontend', url: 'https://github.com/abhinav002k/jenkins-flask'
+                }
+            }
+        }
+
+        stage('Install Express Dependencies') {
+            steps {
+                dir("${FRONTEND_DIR}") {
+                    sh 'npm install'
+                }
+            }
+        }
+
+       stage('Deploy Express') {
+            steps {
+                dir("${FRONTEND_DIR}") {
+                    sh '''
+                        echo "BACKEND_URL=${BACKEND_URL}" > .env
+                        sudo -u ubuntu pm2 restart express-app || \
+                        sudo -u ubuntu pm2 start app.js --name express-app
+                    '''
+                }
+            }
+        }
+
+    }
+}

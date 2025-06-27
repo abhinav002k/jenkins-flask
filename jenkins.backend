@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        FRONTEND_DIR = "frontend"
+        BACKEND_DIR = "backend"
+        BACKEND_URL=""
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                dir('.') {
+                    git branch: 'master-backend', url: 'https://github.com/abhinav002k/jenkins-flask'
+                }
+            }
+        }
+
+
+        stage('Install Flask Dependencies') {
+            steps {
+                dir("${BACKEND_DIR}") {
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Flask') {
+            steps {
+                dir("${BACKEND_DIR}") {
+                    sh '''
+                        sudo -u ubuntu pm2 delete flask-app || true
+                        sudo -u ubuntu pm2 start python3 --name flask-app -- app.py
+                    '''
+                }
+            }
+        }
+
+
+    }
+}
