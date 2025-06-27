@@ -4,14 +4,14 @@ pipeline {
     environment {
         FRONTEND_DIR = "frontend"
         BACKEND_DIR = "backend"
-        BACKEND_URL=""
+        BACKEND_URL="http://13.234.34.85:5000/"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 dir('.') {
-                    git branch: 'master-backend', url: 'https://github.com/abhinav002k/jenkins-flask'
+                    git branch: 'master', url: 'https://github.com/abhinav002k/jenkins-flask'
                 }
             }
         }
@@ -20,7 +20,11 @@ pipeline {
         stage('Install Flask Dependencies') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    sh 'pip install --break-system-packages -r requirements.txt'
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install -r requirements.txt
+                    '''
                 }
             }
         }
