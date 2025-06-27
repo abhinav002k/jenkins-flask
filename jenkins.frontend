@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 dir('.') {
-                     git branch: 'master-frontend', url: 'https://github.com/abhinav002k/jenkins-flask'
+                     git branch: 'master', url: 'https://github.com/abhinav002k/jenkins-flask'
                 }
             }
         }
@@ -29,8 +29,8 @@ pipeline {
                 dir("${FRONTEND_DIR}") {
                     sh '''
                         echo "BACKEND_URL=${BACKEND_URL}" > .env
-                        sudo -u ubuntu pm2 restart express-app || \
-                        sudo -u ubuntu pm2 start app.js --name express-app
+                        pm2 restart express-app || \
+                        pm2 start app.js --name express-app
                     '''
                 }
             }
