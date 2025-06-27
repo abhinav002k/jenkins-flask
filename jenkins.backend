@@ -29,8 +29,8 @@ pipeline {
             steps {
                 dir("${BACKEND_DIR}") {
                     sh '''
-                        sudo -u ubuntu pm2 delete flask-app || true
-                        sudo -u ubuntu pm2 start python3 --name flask-app -- app.py
+                        pm2 delete flask-app || true
+                        pm2 start python3 --name flask-app -- app.py
                     '''
                 }
             }
